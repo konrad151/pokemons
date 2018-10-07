@@ -1,28 +1,64 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+import Pokemon from './Pokemon/Pokemon';
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+  
+	constructor(props) {
+		super(props);
+		this.state = {
+			pokemons: null,
+			loader: false
+		}
+	}
+
+	async componentDidMount() {
+		try {
+			const response = await axios('http://localhost:3000/pokemon');
+			this.setState({
+				pokemons: response,
+				loader: true
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	displayPokemons() {
+		if (this.state.loader) {
+			// console.log(this.state.pokemons.data);
+			let pokemnosAll = [...this.state.pokemons.data];
+			// let allTypes = [];
+			// console.log(allTypes);
+			return(
+				pokemnosAll.map( (pokemon) => {
+					// allTypes.push(pokemon.type.toString());
+					return (
+						<Pokemon
+						key={pokemon.id}
+						img={pokemon.img}
+						num={pokemon.num}
+						name={pokemon.name}
+						type={pokemon.type}
+						/>
+					);
+				})
+			);
+		} else {
+			return(
+				<h1>loading...</h1>
+			);
+		}
+	}
+
+	render() {
+		return (
+			<div>
+				{this.displayPokemons()}
+			</div>
+		);
+	}
 }
 
 export default App;
