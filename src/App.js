@@ -9,13 +9,19 @@ class App extends Component {
 		super(props);
 		this.state = {
 			pokemons: null,
+			currentPage: 1,
+			pageLimit: 5,
 			loader: false
 		}
 	}
 
-	async componentDidMount() {
+	componentDidMount() {
+		this.getPokemons( this.state.currentPage, this.state.pageLimit );
+	}
+
+	async getPokemons( currentPage, pageLimit ) {
 		try {
-			const response = await axios('http://localhost:3000/pokemon');
+			const response = await axios(`http://localhost:3000/pokemon?_page=${currentPage}&_limit=${pageLimit}`);
 			this.setState({
 				pokemons: response,
 				loader: true
@@ -25,15 +31,50 @@ class App extends Component {
 		}
 	}
 
+	renderPagination() {
+		if ( this.state.currentPage === 1 ) {
+			return (
+				<ul className="card-pagination">
+					<li>Strona {this.state.currentPage}</li>
+					<li><a onClick={this.nextPage.bind(this)}>Next</a></li>
+				</ul>
+			)
+		} else if ( this.state.currentPage >= 2 ) {
+			return (
+				<ul className="card-pagination">
+					<li><a onClick={this.previousPage.bind(this)}>Previous</a></li>
+					<li>Strona {this.state.currentPage}</li>
+					<li><a onClick={this.nextPage.bind(this)}>Next</a></li>
+				</ul>
+			)
+		}
+
+	}
+
+	nextPage() {
+		this.setState({
+			currentPage: this.state.currentPage + 1,
+			loader: false
+		}, () => {
+			this.getPokemons(this.state.currentPage, this.state.pageLimit)
+			console.log(this.state.currentPage);
+		});
+	}
+	previousPage() {
+		this.setState({
+			currentPage: this.state.currentPage - 1,
+			loader: false
+		}, () => {
+			this.getPokemons(this.state.currentPage, this.state.pageLimit)
+			console.log(this.state.currentPage);
+		});
+	}
+
 	displayPokemons() {
 		if (this.state.loader) {
-			// console.log(this.state.pokemons.data);
 			let pokemnosAll = [...this.state.pokemons.data];
-			// let allTypes = [];
-			// console.log(allTypes);
 			return(
 				pokemnosAll.map( (pokemon) => {
-					// allTypes.push(pokemon.type.toString());
 					return (
 						<Pokemon
 						key={pokemon.id}
@@ -55,6 +96,7 @@ class App extends Component {
 	render() {
 		return (
 			<div>
+				{this.renderPagination()}
 				{this.displayPokemons()}
 			</div>
 		);
