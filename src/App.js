@@ -1,87 +1,49 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.css';
 import axios from 'axios';
-import Pokemon from './Pokemon/Pokemon';
+import {PokemonContainer} from './components/Pokemon/Pokemon';
+import {PaginationContainer} from './components/Pagination/Pagination';
+import {pokemonsFetched, updateLoader, showButtons, blockButtons, pokemonsAmountFetched} from './actions/index';
 
-class App extends Component {
-  
-	constructor(props) {
-		super(props);
-		this.state = {
-			pokemons: null,
-			currentPage: 1,
-			pageLimit: 5,
-			loader: false
-		}
-	}
+import { connect } from "react-redux";
+
+class App extends React.Component {
 
 	componentDidMount() {
-		this.getPokemons( this.state.currentPage, this.state.pageLimit );
+		this.getPokemons( this.props.page.pageNumber, this.props.pokemonsAmount.pokemonsPerPage );
+		this.getPokemonsAmount();
+		console.log(this.props)
 	}
-
-	async getPokemons( currentPage, pageLimit ) {
+	async getPokemons( page, pageLimit ) {
 		try {
-			const response = await axios(`http://localhost:3000/pokemon?_page=${currentPage}&_limit=${pageLimit}`);
-			this.setState({
-				pokemons: response,
-				loader: true
-			});
+			const response = await axios(`http://localhost:3000/pokemon?_page=${page}&_limit=${pageLimit}`)
+			.then( (response) => this.props.pokemonsFetched(response.data) )
+			.then ( () => this.props.updateLoader(false) )
+			.then( () => this.props.showButtons() )
 		} catch (error) {
 			console.log(error);
 		}
 	}
-
-	renderPagination() {
-		if ( this.state.currentPage === 1 ) {
-			return (
-				<ul className="card-pagination">
-					<li>Strona {this.state.currentPage}</li>
-					<li><a onClick={this.nextPage.bind(this)}>Next</a></li>
-				</ul>
-			)
-		} else if ( this.state.currentPage >= 2 ) {
-			return (
-				<ul className="card-pagination">
-					<li><a onClick={this.previousPage.bind(this)}>Previous</a></li>
-					<li>Strona {this.state.currentPage}</li>
-					<li><a onClick={this.nextPage.bind(this)}>Next</a></li>
-				</ul>
-			)
+	async getPokemonsAmount() {
+		try {
+			const response = await axios(`http://localhost:3000/pokemon`)
+			.then( (response) => this.props.pokemonsAmountFetched(response.data.length) )
+		} catch (error) {
+			console.log(error);
 		}
-
 	}
-
-	nextPage() {
-		this.setState({
-			currentPage: this.state.currentPage + 1,
-			loader: false
-		}, () => {
-			this.getPokemons(this.state.currentPage, this.state.pageLimit)
-			console.log(this.state.currentPage);
-		});
-	}
-	previousPage() {
-		this.setState({
-			currentPage: this.state.currentPage - 1,
-			loader: false
-		}, () => {
-			this.getPokemons(this.state.currentPage, this.state.pageLimit)
-			console.log(this.state.currentPage);
-		});
-	}
-
 	displayPokemons() {
-		if (this.state.loader) {
-			let pokemnosAll = [...this.state.pokemons.data];
+		if ( !this.props.loader.loaderBooleanValue) {
+			let pokemnosAll = [...this.props.pokemons];
 			return(
 				pokemnosAll.map( (pokemon) => {
 					return (
-						<Pokemon
-						key={pokemon.id}
-						img={pokemon.img}
-						num={pokemon.num}
-						name={pokemon.name}
-						type={pokemon.type}
+						<PokemonContainer
+							key={pokemon.id}
+							img={pokemon.img}
+							num={pokemon.num}
+							name={pokemon.name}
+							type={pokemon.type}
 						/>
 					);
 				})
@@ -96,11 +58,29 @@ class App extends Component {
 	render() {
 		return (
 			<div>
-				{this.renderPagination()}
-				{this.displayPokemons()}
+				<div>
+					<PaginationContainer
+						getNewPokemons={this.getPokemons.bind(this)}
+					/>
+					{this.displayPokemons()}
+					{console.log(this.props)}
+				</div>
 			</div>
 		);
 	}
+	
 }
 
-export default App;
+const mapStateToProps = (state) => {
+    return {
+		pokemons: state.pokemons,
+		pokemonsAmount: state.pokemonsAmount,
+		loader: state.loader,
+		page: state.page,
+		button: state.button
+    }
+};
+
+const mapDispatchToProps = {pokemonsFetched, updateLoader, showButtons, blockButtons, pokemonsAmountFetched};
+
+export const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
