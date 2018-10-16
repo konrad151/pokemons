@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import { AppContainer } from './App';
+import './index.sass';
+import { AppContainer } from './components/App/App';
 import * as serviceWorker from './serviceWorker';
 
 import { store } from "./store";

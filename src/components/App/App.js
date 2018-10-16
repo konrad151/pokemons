@@ -1,9 +1,9 @@
 import React from 'react';
-import './App.css';
+import './App.sass';
 import axios from 'axios';
-import {PokemonContainer} from './components/Pokemon/Pokemon';
-import {PaginationContainer} from './components/Pagination/Pagination';
-import {pokemonsFetched, updateLoader, showButtons, blockButtons, pokemonsAmountFetched} from './actions/index';
+import {PokemonContainer} from '../Pokemon/Pokemon';
+import {PaginationContainer} from '../Pagination/Pagination';
+import {pokemonsFetched, updateLoader, showButtons, blockButtons, pokemonsAmountFetched} from '../../actions/index';
 
 import { connect } from "react-redux";
 
@@ -12,12 +12,12 @@ class App extends React.Component {
 	componentDidMount() {
 		this.getPokemons( this.props.page.pageNumber, this.props.pokemonsAmount.pokemonsPerPage );
 		this.getPokemonsAmount();
-		console.log(this.props)
 	}
 	async getPokemons( page, pageLimit ) {
 		try {
 			const response = await axios(`http://localhost:3000/pokemon?_page=${page}&_limit=${pageLimit}`)
 			.then( (response) => this.props.pokemonsFetched(response.data) )
+			// .then ( (response) => console.log(response) )
 			.then ( () => this.props.updateLoader(false) )
 			.then( () => this.props.showButtons() )
 		} catch (error) {
@@ -50,21 +50,23 @@ class App extends React.Component {
 			);
 		} else {
 			return(
-				<h1>loading...</h1>
+				<div className="loader">
+					<img src="/star-loader.svg" />
+				</div>
 			);
 		}
 	}
 
 	render() {
 		return (
-			<div>
-				<div>
-					<PaginationContainer
-						getNewPokemons={this.getPokemons.bind(this)}
-					/>
-					{this.displayPokemons()}
-					{console.log(this.props)}
-				</div>
+			<div className="container">
+					<img className="app-logo" src="/pokemons-list.png" />
+					<div className="pagination">
+						<PaginationContainer getNewPokemons={this.getPokemons.bind(this)} />
+					</div>
+					<div className="pokemons">
+						{this.displayPokemons()}
+					</div>
 			</div>
 		);
 	}

@@ -1,4 +1,5 @@
 import React from 'react';
+import './Pagination.sass';
 import {connect} from 'react-redux';
 import {updateLoader, pageIncrement, pageDecrement, blockButtons, showButtons, pokemonsAmountFetched} from '../../actions/index';
 
@@ -24,7 +25,7 @@ class Pagination extends React.Component {
     handlePreviousButton() {
         if ( this.props.page.pageNumber > 1 ) {
             return (
-                <button disabled={this.props.button.buttonDisabled}><a onClick={() => this.previousPage()}>Poprzednia strona</a></button>
+                <a onClick={() => this.previousPage()}><button className="prev" disabled={this.props.button.buttonDisabled}>Previous page</button></a>
             )
         }
     }
@@ -32,17 +33,17 @@ class Pagination extends React.Component {
     handleNextButton() {
         if ( this.props.page.pageNumber < this.props.pokemonsAmount.pokemonsPages ) {
             return (
-                <button disabled={this.props.button.buttonDisabled}><a onClick={() => this.nextPage()}>Następna strona</a></button>
+                <a onClick={() => this.nextPage()}><button className="next" disabled={this.props.button.buttonDisabled}>Next page</button></a>
             )
         }
     }
 
     render() {
         return (
-            <div className="pagination">
-                    {this.handlePreviousButton()}
-                    <p>Strona {this.props.page.pageNumber} z {this.props.pokemonsAmount.pokemonsPages}</p>
-                    {this.handleNextButton()}
+            <div className="pagination__wrapper">
+                {this.handlePreviousButton()}
+                <p>Page {this.props.page.pageNumber} of {this.props.pokemonsAmount.pokemonsPages}</p>
+                {this.handleNextButton()}
             </div>
         )
     }
