@@ -10,7 +10,6 @@ class Pagination extends React.Component {
             this.props.updateLoader(true)
             this.props.blockButtons()
             this.props.pageIncrement()
-            console.log(this.props.pokemonsAmount.pokemonsPages)
             this.props.getNewPokemons( this.props.page.pageNumber + 1, this.props.pokemonsAmount.pokemonsPerPage)
         } 
     }
@@ -62,4 +61,4 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {updateLoader, pageIncrement, pageDecrement, blockButtons, showButtons, pokemonsAmountFetched};
 
-export const PaginationContainer = connect(mapStateToProps, mapDispatchToProps)(Pagination);
+export const PaginationComponent = connect(mapStateToProps, mapDispatchToProps)(Pagination);

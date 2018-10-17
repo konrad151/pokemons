@@ -1,5 +1,5 @@
 const initialState = {
-    buttonDisabled: false
+    buttonDisabled: true
 }
 
 export const button = (state = initialState, action) => {

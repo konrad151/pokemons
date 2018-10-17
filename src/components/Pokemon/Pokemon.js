@@ -9,11 +9,13 @@ class Pokemon extends React.Component {
         return (
             <div className="pokemons__item" key={this.props.id}>
                 <div className="pokemons__item-wrapper">
-                    <img src={this.props.img} alt="" title="" onLoad={() => this.props.updateLoader(false)}></img>
-                    <div>
-                        <span>#{this.props.num} {this.props.name}</span>
+                    <img src={this.props.img} alt="" title=""></img>
+                    <div className="pokemon__info">
+                        <div className="pokemon__name">#{this.props.num} {this.props.name}</div>
                         <div>
-                            {this.props.type.join(' ')}
+                            {this.props.type.map( (type) => {
+                                return <span key={type} className={type.toLowerCase() + ' pokemons__type'}>{type}</span>
+                            })}
                         </div>
                     </div>
                 </div>
@@ -31,4 +33,4 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {updateLoader};
 
-export const PokemonContainer = connect(mapStateToProps, mapDispatchToProps)(Pokemon);
+export const PokemonComponent = connect(mapStateToProps, mapDispatchToProps)(Pokemon);
