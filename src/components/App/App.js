@@ -50,7 +50,7 @@ class App extends React.Component {
 		} else {
 			return(
 				<div className="loader">
-					<img src="/star-loader.svg" alt="" title=""/>
+					<img src="./star-loader.svg" alt="" title=""/>
 				</div>
 			);
 		}
@@ -59,7 +59,7 @@ class App extends React.Component {
 	render() {
 		return (
 			<div className="container">
-					<img className="app-logo" src="/pokemons-list.png" alt="" title=""/>
+					<img className="app-logo" src="./pokemons-list.png" alt="" title=""/>
 					<div className="pagination">
 						<PaginationComponent getNewPokemons={this.getPokemons.bind(this)} />
 					</div>
