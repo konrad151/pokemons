@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.sass';
+import styles from './App.module.sass';
 import axios from 'axios';
 import {PokemonComponent} from '../Pokemon/Pokemon';
 import {PaginationComponent} from '../Pagination/Pagination';
@@ -49,7 +49,7 @@ class App extends React.Component {
 			);
 		} else {
 			return(
-				<div className="loader">
+				<div className={styles.loader}>
 					<img src="./star-loader.svg" alt="" title=""/>
 				</div>
 			);
@@ -58,15 +58,15 @@ class App extends React.Component {
 
 	render() {
 		return (
-			<div className="container">
-					<img className="app-logo" src="./pokemons-list.png" alt="" title=""/>
-					<div className="pagination">
+			<div className={styles.container}>
+					<img className={styles.appLogo} src="./pokemons-list.png" alt="" title=""/>
+					<div className={styles.pagination}>
 						<PaginationComponent getNewPokemons={this.getPokemons.bind(this)} />
 					</div>
-					<div className="pokemons">
+					<div className={styles.pokemons}>
 						{this.displayPokemons()}
 					</div>
-					<div className="pagination">
+					<div className={styles.pagination}>
 						<PaginationComponent getNewPokemons={this.getPokemons.bind(this)} />
 					</div>
 			</div>
